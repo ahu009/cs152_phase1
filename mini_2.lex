@@ -5,7 +5,7 @@ int lineNum = 1, currPost = 0;
 COMMENT [##].*
 DIGIT [0-9]
 WRONG [0-9_][a-zA-Z0-9_]+
-WRONG2 [a-zA-Z0-9]*[_]
+WRONG2 [a-zA-Z0-9]*[_]+
 IDENTIFIER [a-zA-Z][a-zA-Z0-9_]*[a-zA-Z0-9]*
 %%
 {COMMENT}	;
@@ -51,8 +51,8 @@ return		printf("RETURN\n"); currPost += yyleng;
 ">="		printf("GTE\n"); currPost += yyleng;
 
 {DIGIT}+ 	printf("NUMBER %s\n", yytext); currPost += yyleng;
-{WRONG}		currPost += yyleng; printf("invalid identifier should not start with a number or underscore line:%d position:%d\n",lineNum, currPost); exit(0);
-{WRONG2}	currPost += yyleng; printf("invalid identifier should not end with underscore line:%d position:%d\n",lineNum, currPost); exit(0);
+{WRONG}		currPost += yyleng; printf("invalid identifier should not start with a number or underscore %s line:%d position:%d\n", yytext, lineNum, currPost); exit(0);
+{WRONG2}	currPost += yyleng; printf("invalid identifier should not end with underscore %s line:%d position:%d\n",yytext, lineNum, currPost); exit(0);
 {IDENTIFIER}	printf("IDENT %s\n", yytext); currPost += yyleng;
 
 
@@ -66,7 +66,7 @@ return		printf("RETURN\n"); currPost += yyleng;
 ":="		printf("ASSIGN\n"); currPost += yyleng;
 [ \t]+	;
 [\n]		++lineNum; currPost = 1;
-.		exit(0);
+.		printf("unrecognized symbol %s line: %d position %d\n:", yytext, lineNum, currPost); exit(0);
 
 %%
 
